@@ -8,10 +8,11 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from sentence_transformers import util, SentenceTransformer
 
 
-#model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
+model = pickle.load(open('model/model', 'rb'))
+mlb = pickle.load(open('model/mlb_embeddings', 'rb'))
+words_embeddings = pickle.load(open('model/words_embeddings', 'rb'))
+all_tags = pickle.load(open('model/all_tags', 'rb'))
 
-#mlb = pickle.load(open(model/mlb_embeddings, 'rb'))
-#words_embeddings = pickle.load(open(model/words_embeddings, 'rb'))
 
 def get_random_request():
 
@@ -57,16 +58,17 @@ def run():
     st.text(f'Link of the question : {link}')
     st.text(f'Original tags: {tags}')
 
-    """
+
     model_predict_state = st.text('Making predictions...')
     embeddings = model.encode(text)
     cosine_scores = util.cos_sim(embeddings, words_embeddings)
-    predictions = [all_tags[int(e)] for e in cosine_scores.sort(descending=True)[1][0:3]]
-    data_predict_state.text('Making predictions...done!')
+    predictions = [all_tags[int(e)] for e in cosine_scores.sort(descending=True)[1][0][0:3]]
+    model_predict_state.text('Making predictions...done!')
 
     st.text(f'Suggested tags: {predictions}')
-    """
+
 
 st.title('Question tagger')
 if st.button('Run Predictions on random question'):
     run()
+
